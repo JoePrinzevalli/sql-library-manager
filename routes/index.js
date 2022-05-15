@@ -24,7 +24,7 @@ router.get('/', async function(req, res, next) {
   res.redirect('/books');
   const books = await Book.findAll();
   console.log(books);
-  res.json().books
+  res.json().books;
   const server = http.createServer();
   server.listen(port, host, () => {
     console.log(`Server is running on port 3000`);
@@ -33,8 +33,9 @@ router.get('/', async function(req, res, next) {
 
 // Shows the full list of books
 router.get('/books', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
+  const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
+  if (books) {
+    res.render('index');
   } else {
     res.sendStatus(404);
   }
@@ -86,10 +87,23 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
 }));
 
 
-
-
 // Error Handling
 
+// 404 error
+router.use((req, res, next) => {
+  const err = new Error("Oops, this isn't the page you are looking for!");
+  err.status = 404;
+  err.message = "Oh No! Why don't you try a different page!";
+  res.render('page-not-found', {error})
+  next(err);
+});
 
+// Global Error
+router.use((err, req, res) => {
+  err.status = 500;
+  err.message = 'Looks like there was a server error, come back in a bit!';
+  console.log(err.status, err.message, 'Handling a global error.');
+  res.render('error', {error})
+});
 
 module.exports = router;

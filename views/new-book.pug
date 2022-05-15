@@ -1,0 +1,24 @@
+extends layout
+
+block content
+
+    h1 New Book
+
+    form
+    fieldset
+      
+        label(for='title') Title
+        input(type='text', name='book_title', required)
+    
+        label(for='author') Author:
+        input(type='text', name='book_author', required)
+ 
+        label(for='genre') Genre
+        input(type='text', name='book_genre')
+
+        label(for='year') Year
+        input(type='text', name='book_year')
+
+        button(type='submit', name='user_create') Create New Book
+        button(type='submit', name='user_cancel') Cancel
+        
