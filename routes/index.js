@@ -3,6 +3,7 @@ const app = require('../app');
 var router = express.Router();
 const Book = require('../models').Book;
 
+
 const http = require("http");
 const host = 'localhost';
 const port = 3000;
@@ -17,7 +18,7 @@ function asyncHandler(cb){
       next(error);
     }
   }
-}
+};
 
 /* GET home page. */
 router.get('/', async function(req, res, next) {
@@ -35,7 +36,7 @@ router.get('/', async function(req, res, next) {
 router.get('/books', asyncHandler(async (req, res) => {
   const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
   if (books) {
-    res.render('index');
+    res.render('index', {books, title: "Books"});
   } else {
     res.sendStatus(404);
   }
@@ -94,7 +95,7 @@ router.use((req, res, next) => {
   const err = new Error("Oops, this isn't the page you are looking for!");
   err.status = 404;
   err.message = "Oh No! Why don't you try a different page!";
-  res.render('page-not-found', {error})
+  res.render('page-not-found', {err})
   next(err);
 });
 
