@@ -4,21 +4,21 @@ block content
 
     h1 New Book
 
-    form
-    fieldset
-      
-        label(for='title') Title
-        input(type='text', name='book_title', required)
-    
-        label(for='author') Author:
-        input(type='text', name='book_author', required)
- 
-        label(for='genre') Genre
-        input(type='text', name='book_genre')
-
-        label(for='year') Year
-        input(type='text', name='book_year')
-
-        button(type='submit', name='user_create') Create New Book
-        button(type='submit', name='user_cancel') Cancel
+    form(method='post')
+        p 
+            label(for='title') Title
+            input#title(name='title' type='text')
+        p
+            label(for='author') Author
+            input#author(name='author' type='text')
+        p
+            label(for='genre') Genre
+            input#genre(name='genre' type='text')
+        p
+            label(for='year') Year
+            input#year(name='year' type='text')
+        p
+            input(type='submit' value='Create New Book')
+        p
+            a.button(href='/books') Cancel
         

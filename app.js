@@ -44,14 +44,9 @@ app.use(function(err, req, res, next) {
 // asynchronously connect to the database and syncs the model with the database
 db.sequelize.authenticate();
 console.log('Connection has been established successfully.');
+db.sequelize.sync();
 
-(async () => {
-  try {
-    await db.sequelize.sync({ force: true });
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-  }
-})
-()
+
+
 
 module.exports = app;

@@ -3,11 +3,6 @@ const app = require('../app');
 var router = express.Router();
 const Book = require('../models').Book;
 
-
-const http = require("http");
-const host = 'localhost';
-const port = 3000;
-
 /* async handler function for each route. */
 function asyncHandler(cb){
   return async(req, res, next) => {
@@ -23,18 +18,12 @@ function asyncHandler(cb){
 /* GET home page. */
 router.get('/', async function(req, res, next) {
   res.redirect('/books');
-  const books = await Book.findAll();
-  console.log(books);
-  res.json().books;
-  const server = http.createServer();
-  server.listen(port, host, () => {
-    console.log(`Server is running on port 3000`);
-  });
 });
 
 // Shows the full list of books
 router.get('/books', asyncHandler(async (req, res) => {
   const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
+  console.log(books)
   if (books) {
     res.render('index', {books, title: "Books"});
   } else {
@@ -44,38 +33,26 @@ router.get('/books', asyncHandler(async (req, res) => {
 
 // Shows the create new book form
 router.get('/books/new', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
-  } else {
-    res.sendStatus(404);
-  }
+  res.render('new-book', {book: {}, title: "New Book"});
 }));
 
 // Posts a new book to the database
 router.post('/books/new', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
-  } else {
-    res.sendStatus(404);
-  }
+  const book = await Book.create(req.body);
+  res.redirect("/books/" + book.id);
+  console.log('Posting a new book to the database');
 }));
 
 // Shows book detail form
 router.get('/books/:id', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
-  } else {
-    res.sendStatus(404);
-  }
+  const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
+  res.render('update-book')
 }));
 
 // Updates book info in the database
 router.post('/books/:id', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
-  } else {
-    res.sendStatus(404);
-  }
+  const books = await Book.findByPK(req.params.id);
+  res.render('update-book', {books, title: books.title})
 }));
 
 // Deletes a book--BE CAREFUL
