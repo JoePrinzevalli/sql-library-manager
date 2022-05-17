@@ -22,7 +22,7 @@ router.get('/', async function(req, res, next) {
 
 // Shows the full list of books
 router.get('/books', asyncHandler(async (req, res) => {
-  const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
+  const books = await Book.findAll({ order: [["createdAt", "ASC"]] });
   console.log(books)
   if (books) {
     res.render('index', {books, title: "Books"});
@@ -33,7 +33,7 @@ router.get('/books', asyncHandler(async (req, res) => {
 
 // Shows the create new book form
 router.get('/books/new', asyncHandler(async (req, res) => {
-  res.render('new-book', {book: {}, title: "New Book"});
+  res.render('new-book', {book: {}, title: "New Book"});      //is the book id messssed up when submitting new books
 }));
 
 // Posts a new book to the database
@@ -45,14 +45,15 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 
 // Shows book detail form
 router.get('/books/:id', asyncHandler(async (req, res) => {
-  const books = await Book.findAll({ order: [["createdAt", "DESC"]] });
-  res.render('update-book')
+  const book = await Book.findByPK(req.params.id);
+  res.render('update-book', {book, title: "Update Book"});
 }));
 
 // Updates book info in the database
 router.post('/books/:id', asyncHandler(async (req, res) => {
   const books = await Book.findByPK(req.params.id);
-  res.render('update-book', {books, title: books.title})
+  await books.update(req.body);
+  res.redirect('/books');
 }));
 
 // Deletes a book--BE CAREFUL
