@@ -45,24 +45,22 @@ router.post('/books/new', asyncHandler(async (req, res) => {
 
 // Shows book detail form
 router.get('/books/:id', asyncHandler(async (req, res) => {
-  const book = await Book.findByPK(req.params.id);
+  const book = await Book.findByPk(req.params.id);
   res.render('update-book', {book, title: "Update Book"});
 }));
 
 // Updates book info in the database
 router.post('/books/:id', asyncHandler(async (req, res) => {
-  const books = await Book.findByPK(req.params.id);
-  await books.update(req.body);
+  const book = await Book.findByPk(req.params.id);
+  await book.update(req.body);
   res.redirect('/books');
 }));
 
 // Deletes a book--BE CAREFUL
 router.post('/books/:id/delete', asyncHandler(async (req, res) => {
-  if (condition) {
-    res.render('');
-  } else {
-    res.sendStatus(404);
-  }
+  const book = await Book.findByPk(req.params.id);
+  await book.destroy();
+  res.redirect('/books');
 }));
 
 
