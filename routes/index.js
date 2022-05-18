@@ -38,15 +38,32 @@ router.get('/books/new', asyncHandler(async (req, res) => {
 
 // Posts a new book to the database
 router.post('/books/new', asyncHandler(async (req, res) => {
-  const book = await Book.create(req.body);
-  res.redirect("/books/" + book.id);
-  console.log('Posting a new book to the database');
+  let book;
+  try {
+    book = await Book.create(req.body);
+    res.redirect("/books/" + book.id);
+    console.log('Posting a new book to the database');
+  } catch (error) {
+    if(error.name === "SequelizeValidationError") { // checking the error
+      book = await Book.build(req.body);
+      res.render("books/new", { book, errors: error.errors, title: "New Article" })
+    }
+  }
+  
 }));
 
 // Shows book detail form
 router.get('/books/:id', asyncHandler(async (req, res) => {
   const book = await Book.findByPk(req.params.id);
-  res.render('update-book', {book, title: "Update Book"});
+  if(book) {
+    res.render('update-book', {book, title: "Update Book"});
+  } else {
+      const err = new Error("Oops, this isn't the page you are looking for!");
+      err.status = 404;
+      err.message = "Oh No! Why don't you try a different page!";
+      res.render('page-not-found', {err})
+      next(err);
+  } 
 }));
 
 // Updates book info in the database
@@ -66,7 +83,7 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
 
 // Error Handling
 
-// 404 error
+// // 404 error
 router.use((req, res, next) => {
   const err = new Error("Oops, this isn't the page you are looking for!");
   err.status = 404;
@@ -75,12 +92,14 @@ router.use((req, res, next) => {
   next(err);
 });
 
-// Global Error
+// // Global Error
 router.use((err, req, res) => {
   err.status = 500;
   err.message = 'Looks like there was a server error, come back in a bit!';
   console.log(err.status, err.message, 'Handling a global error.');
   res.render('error', {error})
 });
+
+
 
 module.exports = router;
