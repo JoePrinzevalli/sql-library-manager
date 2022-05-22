@@ -104,8 +104,8 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
 }));
 
 //Search Bar Request
-router.post('/books/:search', asyncHandler(async (req, res) => {
-  var { search } = req.query;
+router.post('/search', asyncHandler(async (req, res) => {
+  var { search } = req.body;
 
   try {
   const books = await Book.findAll({ 
@@ -121,11 +121,11 @@ router.post('/books/:search', asyncHandler(async (req, res) => {
             [Op.like]: `%${search}%`
           }},
           {year: {
-            [Op.like]: `%${search}%`
+            [Op.like]: `${search}`
           }}
       ] } 
      });
-      res.render('index', books )
+      res.render('index', { books } )
       console.log('search working!');
     } catch {
       res.render('page-not-found');

@@ -8,7 +8,7 @@ block content
     a(class='button' href='/books/new') Create New Book
 
     //- search bar below
-    form.search-form(method='post' )
+    form.search-form(method='post', action="/search")
       .search
         input.searchTerm(type='text' name='search' placeholder='Title, Author, Genre or Year?')
         button.searchButton(type='submit')
