@@ -3,7 +3,12 @@ extends layout
 block content
 
     h1 New Book
-
+    if(errors)
+        form
+            h2.error Oooops!
+            ul.error
+                li Title is required
+                li Author is required
     form(method='post')
         p 
             label(for='title') Title

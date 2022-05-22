@@ -7,6 +7,14 @@ block content
   p 
     a(class='button' href='/books/new') Create New Book
 
+    //- search bar below
+    form.search-form(method='post' )
+      .search
+        input.searchTerm(type='text' name='search' placeholder='Title, Author, Genre or Year?')
+        button.searchButton(type='submit')
+          i.fa.fa-search
+          img.searchImg(src='/images/search-in-list.png')
+
   table
     thead
       tr
@@ -17,8 +25,11 @@ block content
     for book in books    
       tbody
         tr
-          td
+          td#title
             a(href=`/books/${book.id}`)= `${book.title}`
-          td= `${book.author}`
-          td= `${book.genre}`
-          td= `${book.year}`
+          td#auhtor= `${book.author}`
+          td#genre= `${book.genre}`
+          td#year= `${book.year}`
+
+  .pagination
+    

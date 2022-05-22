@@ -1,6 +1,7 @@
-body {
+body{
   padding: 10px 50px 50px;
-  font: 18px "Garamond", serif;
+  background: #f2f2f2;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -95,3 +96,44 @@ input[type=text] {
 .error {
   color: rgb(236, 15, 15);
 }
+
+/* Search bar styles */
+
+.search {
+  width: 100%;
+  position: relative;
+  display: flex;
+}
+
+.searchTerm {
+  width: 100%;
+  border: 3px solid #019875;
+  border-right: none;
+  padding: 5px;
+  height: 20px;
+  border-radius: 5px 0 0 5px;
+  outline: none;
+  color: #9DBFAF;
+}
+
+.searchTerm:focus{
+  color: black;
+}
+.search input {
+  margin-left: 0px;
+}
+.searchButton {
+  width: 40px;
+  height: 36px;
+  border: 1px solid #019875;
+  background: #019875;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 20px;
+}
+.searchImg {
+  width: 30px;
+}
+

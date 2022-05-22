@@ -3,6 +3,13 @@ const app = require('../app');
 var router = express.Router();
 const Book = require('../models').Book;
 
+
+//For Search Function
+const Sequelize = require('sequelize');
+const db = require('../models');
+const { Op } = db.Sequelize;
+
+
 /* async handler function for each route. */
 function asyncHandler(cb){
   return async(req, res, next) => {
@@ -20,12 +27,25 @@ router.get('/', async function(req, res, next) {
   res.redirect('/books');
 });
 
-// Shows the full list of books
+// Shows the full list of books and Pagination for books
 router.get('/books', asyncHandler(async (req, res) => {
-  const books = await Book.findAll({ order: [["createdAt", "ASC"]] });
-  console.log(books)
+//  let numOfPages = Math.ceil( numOfBooks /  )
+//  let numOfBooks = limit;
+ 
+  // const books = await Book.findAndCountAll({
+  //   order: [["createdAt", "ASC"]],
+  //   // limit:,
+  //   // offset: 
+  // });
+  // console.log(books)
+ 
+
+  const books = await Book.findAll({ 
+    order: [["createdAt", "ASC"]],
+  });
+
   if (books) {
-    res.render('index', {books, title: "Books"});
+    return res.render('index', {books, title: "Books"});
   } else {
     res.sendStatus(404);
   }
@@ -41,12 +61,15 @@ router.post('/books/new', asyncHandler(async (req, res) => {
   let book;
   try {
     book = await Book.create(req.body);
-    res.redirect("/books/" + book.id);
+    res.redirect("/books/");
     console.log('Posting a new book to the database');
   } catch (error) {
-    if(error.name === "SequelizeValidationError") { // checking the error
+    if(error.name === "SequelizeValidationError") { 
+      //shows error for when there is no author or title
       book = await Book.build(req.body);
-      res.render("books/new", { book, errors: error.errors, title: "New Article" })
+      res.render("new-book", { book, errors: error.errors, title: "New Book" })
+    } else {
+      throw error;
     }
   }
   
@@ -80,6 +103,36 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
   res.redirect('/books');
 }));
 
+//Search Bar Request
+router.post('/books/:search', asyncHandler(async (req, res) => {
+  var { search } = req.query;
+
+  try {
+  const books = await Book.findAll({ 
+      where: { 
+        [Op.or]:[
+          {title: {
+            [Op.like]: `%${search}%`
+          }},
+          {author:{
+            [Op.like]: `%${search}%`
+          }},
+          {genre: {
+            [Op.like]: `%${search}%`
+          }},
+          {year: {
+            [Op.like]: `%${search}%`
+          }}
+      ] } 
+     });
+      res.render('index', books )
+      console.log('search working!');
+    } catch {
+      res.render('page-not-found');
+      console.log('search not working!')
+    }
+}));
+
 
 // Error Handling
 
@@ -95,11 +148,9 @@ router.use((req, res, next) => {
 // // Global Error
 router.use((err, req, res) => {
   err.status = 500;
-  err.message = 'Looks like there was a server error, come back in a bit!';
+  err.message = 'Looks iLike there was a server error, come back in a bit!';
   console.log(err.status, err.message, 'Handling a global error.');
   res.render('error', {error})
 });
-
-
 
 module.exports = router;
