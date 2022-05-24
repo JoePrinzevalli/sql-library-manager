@@ -4,8 +4,17 @@ var router = express.Router();
 const Book = require('../models').Book;
 
 
+// For google image search api
+
+// function fetchData(url) {           
+//   return fetch('https://www.google.com/jsapi')
+//           .then(res => res.json())
+//           .then(data => console.log(data))
+//           .catch(err => console.log(err))
+// }
+
+
 //For Search Function
-const Sequelize = require('sequelize');
 const db = require('../models');
 const { Op } = db.Sequelize;
 
@@ -29,31 +38,47 @@ router.get('/', async function(req, res, next) {
 
 // Shows the full list of books and Pagination for books
 router.get('/books', asyncHandler(async (req, res) => {
-//  let numOfPages = Math.ceil( numOfBooks /  )
-//  let numOfBooks = limit;
- 
-  // const books = await Book.findAndCountAll({
-  //   order: [["createdAt", "ASC"]],
-  //   // limit:,
-  //   // offset: 
-  // });
-  // console.log(books)
- 
+  //contains how many books will be shown per page
+  const booksPerPage = 7;
+   //retruns the page number from a query string
+   let page = req.query.page ? Number(req.query.page) : 1;
+  //sets the stating limit number
+  const startingOffset = (page - 1) * booksPerPage;
+  //contains all books in sql database
+  const allBooks = await Book.findAll();
+   //shows count of books and puts a limit to startingLimit
+ const booksP = await Book.findAndCountAll({
+  limit: booksPerPage,
+  offset: startingOffset
+});
+  //returns number of buttons to be shwon index pug file---how to do this
+  const numOfButtons = Math.ceil(booksP.count / booksPerPage);
 
-  const books = await Book.findAll({ 
-    order: [["createdAt", "ASC"]],
-  });
-
-  if (books) {
-    return res.render('index', {books, title: "Books"});
-  } else {
-    res.sendStatus(404);
+  //helps deal with page errors---I think
+  if (page > numOfButtons) {
+    res.redirect('/books?page='+encodeURIComponent(numOfButtons) )
+  } else if(page < 1){
+    res.redirect('/books?page='+encodeURIComponent('1') )
   }
+
+if(booksP) {
+  return res.render('index', {booksP, title: "Books"});
+}
+  //code below wil be deleted later, just a replacment for now
+  // const books = await Book.findAll({ 
+  //   order: [["createdAt", "ASC"]],
+  // });
+  // if (books) {
+  //   return res.render('index', {books, title: "Books"});
+  // } else {
+  //   res.sendStatus(404);
+  // }
+  //end of replacemnt code
 }));
 
 // Shows the create new book form
 router.get('/books/new', asyncHandler(async (req, res) => {
-  res.render('new-book', {book: {}, title: "New Book"});      //is the book id messssed up when submitting new books
+  res.render('new-book', {book: {}, title: "New Book"});      
 }));
 
 // Posts a new book to the database
@@ -68,9 +93,7 @@ router.post('/books/new', asyncHandler(async (req, res) => {
       //shows error for when there is no author or title
       book = await Book.build(req.body);
       res.render("new-book", { book, errors: error.errors, title: "New Book" })
-    } else {
-      throw error;
-    }
+    } 
   }
   
 }));
