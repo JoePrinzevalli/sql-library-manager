@@ -61,9 +61,12 @@ router.get('/books', asyncHandler(async (req, res) => {
     res.redirect('/books?page='+encodeURIComponent('1') )
   }
 
+console.log(booksP.rows)
+
+//will render books and pagination
 if(booksP) {
-  return res.render('index', {booksP, title: "Books"});
-}
+  return res.render('index', {booksP: booksP.rows, title: "Books", page });
+} 
   //code below wil be deleted later, just a replacment for now
   // const books = await Book.findAll({ 
   //   order: [["createdAt", "ASC"]],

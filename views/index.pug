@@ -22,7 +22,7 @@ block content
         th Author
         th Genre
         th Year
-    for book in books    
+    for book in booksP 
       tbody
         tr
           td#title
@@ -31,10 +31,9 @@ block content
           td#genre= `${book.genre}`
           td#year= `${book.year}`
 
-  //- .pagination
-  //-   - var= i;
-  //-   ul
-  //-     while  i < numOfButtons
-  //-       button= i++
-
-    
+  .pagination
+  each book in booksP
+    - var = i++
+    li
+      = book
+      button()=i
