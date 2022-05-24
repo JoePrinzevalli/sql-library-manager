@@ -61,11 +61,9 @@ router.get('/books', asyncHandler(async (req, res) => {
     res.redirect('/books?page='+encodeURIComponent('1') )
   }
 
-console.log(booksP.rows)
-
 //will render books and pagination
 if(booksP) {
-  return res.render('index', {booksP: booksP.rows, title: "Books", page });
+  return res.render('index', {booksP: booksP.rows, title: "Books", page});
 } 
   //code below wil be deleted later, just a replacment for now
   // const books = await Book.findAll({ 
@@ -134,7 +132,7 @@ router.post('/search', asyncHandler(async (req, res) => {
   var { search } = req.body;
 
   try {
-  const books = await Book.findAll({ 
+  const booksP = await Book.findAll({ 
       where: { 
         [Op.or]:[
           {title: {
@@ -151,7 +149,8 @@ router.post('/search', asyncHandler(async (req, res) => {
           }}
       ] } 
      });
-      res.render('index', { books } )
+     
+      res.render('index', { booksP, title: "Books" } )
       console.log('search working!');
     } catch {
       res.render('page-not-found');
