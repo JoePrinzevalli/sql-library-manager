@@ -53,6 +53,15 @@ router.get('/books', asyncHandler(async (req, res) => {
 });
   //returns number of buttons to be shwon index pug file---how to do this
   const numOfButtons = Math.ceil(booksP.count / booksPerPage);
+  
+  //For shwoing results in /books under buttons
+  const numberOfInstances = booksP.rows.length;
+  const totalBooks = allBooks.length;
+
+  //gets value of url
+  const urlBooks = 'http://localhost:3000/books';
+  const urlSearch = 'http://localhost:3000/search'
+
 
   //helps deal with page errors---I think
   if (page > numOfButtons) {
@@ -63,7 +72,7 @@ router.get('/books', asyncHandler(async (req, res) => {
 
 //will render books and pagination
 if(booksP) {
-  return res.render('index', {booksP: booksP.rows, title: "Books", page});
+  return res.render('index', {booksP: booksP.rows, title: "Managing Library Inventory Using SQL", page, numOfButtons, allBooks, startingOffset, numberOfInstances, totalBooks, urlBooks, urlSearch});
 } 
   //code below wil be deleted later, just a replacment for now
   // const books = await Book.findAll({ 
@@ -132,7 +141,7 @@ router.post('/search', asyncHandler(async (req, res) => {
   var { search } = req.body;
 
   try {
-  const booksP = await Book.findAll({ 
+  const booksP = await Book.findAndCountAll({ 
       where: { 
         [Op.or]:[
           {title: {
@@ -150,8 +159,9 @@ router.post('/search', asyncHandler(async (req, res) => {
       ] } 
      });
      
-      res.render('index', { booksP, title: "Books" } )
-      console.log('search working!');
+      res.render('index', { booksP: booksP.rows, title: "Searched Books" } )
+      console.log('search working!'); 
+    
     } catch {
       res.render('page-not-found');
       console.log('search not working!')

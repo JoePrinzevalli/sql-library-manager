@@ -31,9 +31,17 @@ block content
           td#genre= `${book.genre}`
           td#year= `${book.year}`
 
-  .pagination
-  //- each book in booksP
-  //-   - var = i++
-  //-   li
-  //-     = book
-  //-     button()=i
+  if urlBooks
+    .pagination
+      -var x= numOfButtons
+      -var i= 1
+      if page 
+        while i <= x
+          button.active(onclick=`javascript:window.location='http://localhost:3000/books?page=${i}'`).pagButton= i
+          -i++
+
+    p= `You are on button ${page}`
+    p= `Showing Results ${startingOffset + 1} - ${numberOfInstances +startingOffset} Out Of ${totalBooks} Books.`
+  else
+    p
+      a.button(href='/books') Back to Catalog
