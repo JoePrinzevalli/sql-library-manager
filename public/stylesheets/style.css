@@ -156,6 +156,10 @@ input[type=text] {
   color: white;
   cursor: pointer;
 }
-.active {
-  border: 3px solid red;
+.pagButton:hover {
+  opacity: 0.75;
 }
+
+/* .active {
+  border: 3px solid red;
+} */

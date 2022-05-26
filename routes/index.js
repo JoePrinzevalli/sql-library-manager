@@ -62,7 +62,6 @@ router.get('/books', asyncHandler(async (req, res) => {
   const urlBooks = 'http://localhost:3000/books';
   const urlSearch = 'http://localhost:3000/search'
 
-
   //helps deal with page errors---I think
   if (page > numOfButtons) {
     res.redirect('/books?page='+encodeURIComponent(numOfButtons) )
@@ -70,20 +69,10 @@ router.get('/books', asyncHandler(async (req, res) => {
     res.redirect('/books?page='+encodeURIComponent('1') )
   }
 
-//will render books and pagination
-if(booksP) {
-  return res.render('index', {booksP: booksP.rows, title: "Managing Library Inventory Using SQL", page, numOfButtons, allBooks, startingOffset, numberOfInstances, totalBooks, urlBooks, urlSearch});
-} 
-  //code below wil be deleted later, just a replacment for now
-  // const books = await Book.findAll({ 
-  //   order: [["createdAt", "ASC"]],
-  // });
-  // if (books) {
-  //   return res.render('index', {books, title: "Books"});
-  // } else {
-  //   res.sendStatus(404);
-  // }
-  //end of replacemnt code
+  //will render books and pagination
+  if(booksP) {
+    return res.render('index', {booksP: booksP.rows, title: "Managing Library Inventory Using SQL", page, numOfButtons, allBooks, startingOffset, numberOfInstances, totalBooks, urlBooks, urlSearch});
+  }
 }));
 
 // Shows the create new book form
@@ -156,12 +145,12 @@ router.post('/search', asyncHandler(async (req, res) => {
           {year: {
             [Op.like]: `${search}`
           }}
-      ] } 
+      ] }
      });
      
       res.render('index', { booksP: booksP.rows, title: "Searched Books" } )
       console.log('search working!'); 
-    
+
     } catch {
       res.render('page-not-found');
       console.log('search not working!')
