@@ -113,9 +113,18 @@ router.get('/books/:id', asyncHandler(async (req, res) => {
 
 // Updates book info in the database
 router.post('/books/:id', asyncHandler(async (req, res) => {
-  const book = await Book.findByPk(req.params.id);
-  await book.update(req.body);
-  res.redirect('/books');
+  let book;
+  try {
+    book = await Book.findByPk(req.params.id);
+    await book.update(req.body);
+    res.redirect('/books');
+  } catch (error) {
+    if(error.name === "SequelizeValidationError") { 
+      //shows error for when there is no author or title
+      book = await Book.build(req.body);
+      res.render("update-book", { book, errors: error.errors, title: "Update Book" })
+    }
+  }
 }));
 
 // Deletes a book--BE CAREFUL
@@ -127,6 +136,7 @@ router.post('/books/:id/delete', asyncHandler(async (req, res) => {
 
 //Search Bar Request
 router.post('/search', asyncHandler(async (req, res) => {
+
   var { search } = req.body;
 
   try {

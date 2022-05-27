@@ -3,8 +3,15 @@ extends layout.pug
 block content
 
     h1 Update Book
+    if(errors)
+        form
+            h2.error Oooops!
+            ul.error
+                each error in errors
+                    li
+                        =error.message
 
-    form( method ='post')
+    form(method ='post')
         p
             label(for='title') Title
             input#title(name='title' type='text' value= book.title)
